@@ -11,7 +11,7 @@ _ODEDEPS=mathUtils.h \
 	     ODE/ODEdata.h \
 	     ODE/ODEsolver.h \
 	     ODE/ODEstepperBase.h \
-	     ODE/steppers/StepperDopr5.h
+	     ODE/steppers/ODEstepperPD5.h
 
 _SFDEPS=mathUtils.h \
 	    types.h \
@@ -29,10 +29,10 @@ SFOBJ=$(patsubst %,$(ODIR)/%,$(_SFOBJ))
 all: ODEtest SFtest
 
 makeobjdir:
-	mkdir $(ODIR)
+	mkdir -p $(ODIR) 
 
 makebindir:
-	mkdir $(BINDIR)
+	mkdir -p $(BINDIR) 
 
 $(ODIR)/%.o: $(SDIR)/%.cpp $(DEPS) 
 	$(CC) -c -o $@ $< -I$(IDIR)

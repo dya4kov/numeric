@@ -4,12 +4,12 @@
 #include "../../mathUtils.h"
 
 template<class RHStype>
-class StepperDopr5 : public ODEstepperBase {
+class ODEstepperPD5 : public ODEstepperBase {
 	// Dormand-Prince fifth-order Runge-Kutta step with monitoring of 
 	// local truncation error to ensure accuracy and adjust stepsize.
 public:
 	typedef RHStype RHS;
-	StepperDopr5(DoubleVec &_y, DoubleVec &_dydx, Double &_x);
+	ODEstepperPD5(DoubleVec &_y, DoubleVec &_dydx, Double &_x);
 	void Step(const Double hTry, RHStype &rhs);
 	void dy(const Double h, RHStype &rhs);
 	void PrepareDense(const Double h, RHStype &rhs);
@@ -29,7 +29,7 @@ private:
 };
 
 template<class RHStype>
-StepperDopr5<RHStype>::StepperDopr5(DoubleVec &_y, DoubleVec &_dydx, Double &_x) : ODEstepperBase(_y, _dydx, _x) {
+ODEstepperPD5<RHStype>::ODEstepperPD5(DoubleVec &_y, DoubleVec &_dydx, Double &_x) : ODEstepperBase(_y, _dydx, _x) {
 	dim = RHStype::dim;
 	n = dim;
 	yOut = DoubleVec(dim, 0.0);
@@ -48,7 +48,7 @@ StepperDopr5<RHStype>::StepperDopr5(DoubleVec &_y, DoubleVec &_dydx, Double &_x)
 }
 
 template<class RHStype>
-void StepperDopr5<RHStype>::Step(const Double hTry, RHStype &rhs) {
+void ODEstepperPD5<RHStype>::Step(const Double hTry, RHStype &rhs) {
 	Double h = hTry; // Set stepsize to the initial trial value
 	for (;;) {
 		dy(h, rhs); // Take a step
@@ -57,7 +57,7 @@ void StepperDopr5<RHStype>::Step(const Double hTry, RHStype &rhs) {
 		// Else step rejected. Try again with
         // reduced h set by controller
 		if (abs(h) <= abs(x)*EPS) {
-			throw("stepSize underflow in StepperDopr5");
+			throw("stepSize underflow in ODEstepperPD5");
 		}
 	}
 	if (dense) PrepareDense(h,rhs);
@@ -70,7 +70,7 @@ void StepperDopr5<RHStype>::Step(const Double hTry, RHStype &rhs) {
 }
 
 template<class RHStype>
-void StepperDopr5<RHStype>::dy(const Double h, RHStype &rhs) {
+void ODEstepperPD5<RHStype>::dy(const Double h, RHStype &rhs) {
 	static const Double
 	c2 = 0.2, c3 = 0.3, c4 = 0.8, c5 = 8.0/9.0,
 	a21 = 0.2,
@@ -117,7 +117,7 @@ void StepperDopr5<RHStype>::dy(const Double h, RHStype &rhs) {
 }
 
 template<class RHStype>
-void StepperDopr5<RHStype>::PrepareDense(const Double h, RHStype &rhs) {
+void ODEstepperPD5<RHStype>::PrepareDense(const Double h, RHStype &rhs) {
 	// Store coefficients of interpolating polynomial for dense output in rcont1...rcont5.
 	DoubleVec yTemp(dim, 0.0);
 	static const Double
@@ -142,7 +142,7 @@ void StepperDopr5<RHStype>::PrepareDense(const Double h, RHStype &rhs) {
 }
 
 template<class RHStype>
-Double StepperDopr5<RHStype>::DenseOut(const Int i, const Double x, const Double h) {
+Double ODEstepperPD5<RHStype>::DenseOut(const Int i, const Double x, const Double h) {
 	// Evaluate interpolating polynomial for y[i] at location x, 
 	// where xold <= x <= xold + h
 	Double s = (x - xOld)/h;
@@ -151,7 +151,7 @@ Double StepperDopr5<RHStype>::DenseOut(const Int i, const Double x, const Double
 }
 
 template<class RHStype>
-Double StepperDopr5<RHStype>::Error() {
+Double ODEstepperPD5<RHStype>::Error() {
 	// Use yerr to compute norm of scaled error estimate.
 	// A value less than one means the step wassuccessful
 	Double err = 0.0;
@@ -164,10 +164,10 @@ Double StepperDopr5<RHStype>::Error() {
 }
 
 template<class RHStype>
-StepperDopr5<RHStype>::Controller::Controller() : reject(false), errOld(1.0e-4) {}
+ODEstepperPD5<RHStype>::Controller::Controller() : reject(false), errOld(1.0e-4) {}
 
 template <class RHStype>
-bool StepperDopr5<RHStype>::Controller::Success(const Double err, Double &h) {
+bool ODEstepperPD5<RHStype>::Controller::Success(const Double err, Double &h) {
 	// Returns true if err <= 1, false otherwise. If step was successful, 
 	// sets hNext to the estimated optimal stepsize for the next step.
 	// If the step failed, reduces h appropriately for another try.
