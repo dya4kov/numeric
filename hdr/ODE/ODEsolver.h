@@ -8,8 +8,8 @@ class ODEsolver {
 public:
 	ODEsolver(Double _hStart = 1e-6, Double _hMin = 0, Int _maxStep = 50000) : 
 	dim(Stepper::RHS::dim), 
-	y(dim, 0.0),
-	dydx(dim, 0.0),
+	y(0.0, dim),
+	dydx(0.0, dim),
 	x(0.0),
 	s(y, dydx, x)
 	{
@@ -84,7 +84,6 @@ void ODEsolver<Stepper>::Integrate(typename Stepper::RHS &rhs, DoubleVec &_yStar
 	rhs(x, y, dydx); // store initial values
 	if (dense) out->Out(-1, x, y, s, h);
 	else out->Save(x,y);
-
 	for (nStep = 0; nStep < maxStep; ++nStep) {
 		if ((x + h*1.0001 - xTo)*(xTo - xFrom) > 0.0) {
 			h = xTo - x; // if stepsize can overshoot, decrease

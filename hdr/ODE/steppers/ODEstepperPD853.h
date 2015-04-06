@@ -218,27 +218,27 @@ template<class RHStype>
 ODEstepperPD853<RHStype>::ODEstepperPD853(DoubleVec &_y, DoubleVec &_dydx, Double &_x) : ODEstepperBase(_y, _dydx, _x) {
 	dim = RHStype::dim;
 	n = dim;
-	yOut = DoubleVec(dim, 0.0);
-	yErr = DoubleVec(dim, 0.0);
-	k2 = DoubleVec(dim, 0.0);
-	k3 = DoubleVec(dim, 0.0);
-	k4 = DoubleVec(dim, 0.0);
-	k5 = DoubleVec(dim, 0.0);
-	k6 = DoubleVec(dim, 0.0);
-	k7 = DoubleVec(dim, 0.0);
-	k8 = DoubleVec(dim, 0.0);
-	k9 = DoubleVec(dim, 0.0);
-	k10 = DoubleVec(dim, 0.0);
-	rcont1 = DoubleVec(dim, 0.0);
-	rcont2 = DoubleVec(dim, 0.0);
-	rcont3 = DoubleVec(dim, 0.0);
-	rcont4 = DoubleVec(dim, 0.0);
-	rcont5 = DoubleVec(dim, 0.0);
-	rcont6 = DoubleVec(dim, 0.0);
-	rcont7 = DoubleVec(dim, 0.0);
-	rcont8 = DoubleVec(dim, 0.0);
-	yErr2 = DoubleVec(dim, 0.0);
-	dydxnew = DoubleVec(dim, 0.0);
+	yOut = DoubleVec(0.0, dim);
+	yErr = DoubleVec(0.0, dim);
+	k2 = DoubleVec(0.0, dim);
+	k3 = DoubleVec(0.0, dim);
+	k4 = DoubleVec(0.0, dim);
+	k5 = DoubleVec(0.0, dim);
+	k6 = DoubleVec(0.0, dim);
+	k7 = DoubleVec(0.0, dim);
+	k8 = DoubleVec(0.0, dim);
+	k9 = DoubleVec(0.0, dim);
+	k10 = DoubleVec(0.0, dim);
+	rcont1 = DoubleVec(0.0, dim);
+	rcont2 = DoubleVec(0.0, dim);
+	rcont3 = DoubleVec(0.0, dim);
+	rcont4 = DoubleVec(0.0, dim);
+	rcont5 = DoubleVec(0.0, dim);
+	rcont6 = DoubleVec(0.0, dim);
+	rcont7 = DoubleVec(0.0, dim);
+	rcont8 = DoubleVec(0.0, dim);
+	yErr2 = DoubleVec(0.0, dim);
+	dydxnew = DoubleVec(0.0, dim);
 }
 
 template<class RHStype>
@@ -266,7 +266,7 @@ void ODEstepperPD853<RHStype>::Step(const Double hTry, RHStype &rhs) {
 
 template<class RHStype>
 void ODEstepperPD853<RHStype>::dy(const Double h, RHStype &rhs) {
-	DoubleVec yTemp(dim, 0.0);	
+	DoubleVec yTemp(0.0, dim);
 	Int i;
 	for (i = 0; i < n; ++i) {
 		yTemp[i] = y[i] + h*a21*dydx[i];
@@ -333,7 +333,7 @@ void ODEstepperPD853<RHStype>::dy(const Double h, RHStype &rhs) {
 
 template<class RHStype>
 void ODEstepperPD853<RHStype>::PrepareDense(const Double h, RHStype &rhs) {
-	DoubleVec yTemp(dim, 0.0);
+	DoubleVec yTemp(0.0, dim);
 	Double ydiff = 0.0;
 	Double bspl = 0.0;
 	Int i; 

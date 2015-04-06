@@ -9,7 +9,7 @@ public:
 		count = 0;
 	}
 	ODEdata(const Int _nSave) {
-		kMax = _nSave > 0 ? _nSave : 500;
+		kMax = _nSave > 0 ? _nSave + 1 : 500;
 		nSave = _nSave;
 		count = 0;
 		dense = nSave > 0 ? true : false;
@@ -17,8 +17,8 @@ public:
 	void Init(const Int _dim, const Double _xFrom, const Double _xTo) {
 		dim = _dim;
 		if (kMax == -1) return;
-		xSave = DoubleVec(kMax, 0.0);
-		ySave = DoubleMat(dim, DoubleVec(kMax, 0.0));
+		xSave = DoubleVec(0.0, kMax);
+		ySave = DoubleMat(0.0, dim, kMax);
 		xFrom = _xFrom;
 		xTo = _xTo;
 		if (dense) {
@@ -29,9 +29,7 @@ public:
 	void Resize() {
 		kMax = kMax*2;
 		xSave.resize(kMax);
-		for (Int i = 0; i < dim; ++i) {
-			ySave[i].resize(kMax);
-		}
+		ySave.resize(dim, kMax);
 	}
 	bool IsDense() {
 		return dense;
@@ -73,6 +71,11 @@ public:
 	}
 	Int Count() {
 		return count;
+	}
+	void Reset() {
+		xSave *= 0.0;
+		ySave *= 0.0;
+		count = 0;
 	}
 
 	DoubleVec xSave;

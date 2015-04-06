@@ -32,19 +32,19 @@ template<class RHStype>
 ODEstepperPD5<RHStype>::ODEstepperPD5(DoubleVec &_y, DoubleVec &_dydx, Double &_x) : ODEstepperBase(_y, _dydx, _x) {
 	dim = RHStype::dim;
 	n = dim;
-	yOut = DoubleVec(dim, 0.0);
-	yErr = DoubleVec(dim, 0.0);
-	k2 = DoubleVec(dim, 0.0);
-	k3 = DoubleVec(dim, 0.0);
-	k4 = DoubleVec(dim, 0.0);
-	k5 = DoubleVec(dim, 0.0);
-	k6 = DoubleVec(dim, 0.0);
-	rcont1 = DoubleVec(dim, 0.0);
-	rcont2 = DoubleVec(dim, 0.0);
-	rcont3 = DoubleVec(dim, 0.0);
-	rcont4 = DoubleVec(dim, 0.0);
-	rcont5 = DoubleVec(dim, 0.0);
-	dydxnew = DoubleVec(dim, 0.0);
+	yOut = DoubleVec(0.0, dim);
+	yErr = DoubleVec(0.0, dim);
+	k2 = DoubleVec(0.0, dim);
+	k3 = DoubleVec(0.0, dim);
+	k4 = DoubleVec(0.0, dim);
+	k5 = DoubleVec(0.0, dim);
+	k6 = DoubleVec(0.0, dim);
+	rcont1 = DoubleVec(0.0, dim);
+	rcont2 = DoubleVec(0.0, dim);
+	rcont3 = DoubleVec(0.0, dim);
+	rcont4 = DoubleVec(0.0, dim);
+	rcont5 = DoubleVec(0.0, dim);
+	dydxnew = DoubleVec(0.0, dim);
 }
 
 template<class RHStype>
@@ -81,8 +81,7 @@ void ODEstepperPD5<RHStype>::dy(const Double h, RHStype &rhs) {
 	a71 = 35.0/384.0,      a73 = 500.0/1113.0,    a74 = 125.0/192.0,    a75 = -2187.0/6784.0, a76 = 11.0/84.0,
 	e1 = 71.0/57600.0,      e3 = -71.0/16695.0,    e4 = 71.0/1920.0, 
 	e5 = -17253.0/339200.0, e6 = 22.0/525.0,       e7 = -1.0/40.0;
-	DoubleVec yTemp(dim, 0.0);
-	
+	DoubleVec yTemp(0.0, dim);
 	Int i;
 	for (i = 0; i < n; ++i) { // First step
 		yTemp[i] = y[i] + h*a21*dydx[i];
@@ -119,7 +118,7 @@ void ODEstepperPD5<RHStype>::dy(const Double h, RHStype &rhs) {
 template<class RHStype>
 void ODEstepperPD5<RHStype>::PrepareDense(const Double h, RHStype &rhs) {
 	// Store coefficients of interpolating polynomial for dense output in rcont1...rcont5.
-	DoubleVec yTemp(dim, 0.0);
+	DoubleVec yTemp(0.0, dim);
 	static const Double
 	d1 = -12715105075.0/11282082432.0,
 	d3 = 87487479700.0/32700410799.0, 

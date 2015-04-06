@@ -30,19 +30,23 @@ int main() {
 	h1 = 0.01, 
 	hmin = 0.0, 
 	x1 = 0.0, 
-	x2 = M_PI;
+	x2 = 2.0;
 	DoubleVec ystart(rhs_harmonic::dim);
 	ystart[0] = 2.0;
 	ystart[1] = 0.0;
-	ODEdata out(20);
-	rhs_harmonic d(2.0);
-	ODEsolver<ODEstepperPD853<rhs_harmonic> > ode(h1,hmin);
+	ODEdata out(100);
+	rhs_van d(0.001);
+	// std::cout << "before init" << std::endl;
+	ODEsolver<ODEstepperPD853<rhs_van> > ode(h1,hmin);
 	ode.SetTolerance(atol, rtol);
 	ode.SetOutput(out);
+	// std::cout << "set output" << std::endl;
 	ode.Integrate(d, ystart, x1, x2);
 	for (Int i = 0; i < out.Count(); ++i) {
-		std::cout << out.xSave[i] << " " << out.ySave[0][i] << " " <<
-			out.ySave[1][i] << std::endl;
+        std::cout << out.xSave[i] << " ";
+        std::cout << out.ySave[0][i] << " ";
+        std::cout << out.ySave[1][i];
+        std::cout << std::endl;
 	}
 	return 0;
 }
