@@ -25,6 +25,7 @@ public:
 			xOut = xFrom;
 			dxOut = (xTo - xFrom)/nSave;
 		}
+		count = 0;
 	}
 	void Resize() {
 		kMax = kMax*2;
