@@ -2,6 +2,7 @@
 #include "../numericTypes.h"
 #include "../mathUtils.h"
 #include "ODEdata.h"
+#include <iostream>
 
 template<class Stepper>
 class ODEsolver {
@@ -24,6 +25,7 @@ public:
 	void SetDenseOn();
 	void SetDenseOff();
 	void SetTolerance(const Double _tolAbs, const Double _tolRel);
+	void SetStep(const Double _hStart);
 	void SetOutput(ODEdata &_out);
 	void Integrate(typename Stepper::RHS &rhs,
 				   DoubleVec &_yStart, 
@@ -65,6 +67,11 @@ void ODEsolver<Stepper>::SetTolerance(const Double _tolAbs, const Double _tolRel
 }
 
 template<class Stepper>
+void ODEsolver<Stepper>::SetStep(const Double _hStart) {
+	hStart = _hStart;
+}
+
+template<class Stepper>
 void ODEsolver<Stepper>::SetOutput(ODEdata &_out) {
 	out = &_out;
 	if (out->IsDense()) SetDenseOn();
@@ -96,15 +103,17 @@ void ODEsolver<Stepper>::Integrate(typename Stepper::RHS &rhs, DoubleVec &_yStar
 		else {
 			out->Save(x,y);
 		}
+		// std::cout << "x = " << x << ", y[0] = " << y[0] << ", y[1] = " << y[1] <<
+		// ", y[2] = " << y[2] << ", y[3] = " << y[3] << std::endl;
 		if ((x - xTo)*(xTo - xFrom) >= 0.0) { // Are we done?
-			yStart = y; // Update ystart (??)
+			_yStart = y; // Update ystart (??)
 			// make sure last step gets saved
 			if (out->Capacity() > 0 && abs(out->xSave[out->Count() - 1] - xTo) > 100.0*abs(xTo)*EPS)
 				out->Save(x,y);
 			return; // normal exit
 		}
-		if (abs(s.NextStep()) <= hMin) throw("Step size too small in ODEsolver");
+		if (abs(s.NextStep()) <= hMin) std::cerr << "Step size too small in ODEsolver" << std::endl;
 		h = s.NextStep();
 	}
-	throw("Too many steps in routine ODEsolver");
+	std::cerr << "Too many steps in routine ODEsolver" << std::cerr;
 }
